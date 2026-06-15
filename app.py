@@ -1,5 +1,6 @@
 from flask import Flask
 from models import db, User
+from flask import Flask,render_template,request,redirect
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    return "home."
+    return render_template('login.html')
 
 if __name__ =='__main__':
     app.run(debug=True)
