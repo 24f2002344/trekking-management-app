@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Registration</title>
+</head>
+<body class="bg-light d-flex flex-column align-items-center justify-content-center" style="min-height: 100vh; py-4;">
+    
+    <div class="card shadow-sm border-0 my-4" style="width: 400px; border-radius: 8px; overflow: hidden;">
+        <div class="bg-primary text-white text-center py-2">
+            <h2 class="mb-0 fw-normal">Registration</h2>
+        </div>
+
+        <div class="card-body px-4 mt-3">
+            <form action="/register" method="POST">
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Full name</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">User name</label>
+                    <input type="text" name="username" class="form-control" placeholder="Enter user name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Phone</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Enter phone number" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Email address</label>
+                    <input type="email" name="email" class="form-control" placeholder="Enter email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                </div>
+
+                <div class="pt-2 mb-2">
+                    <button type="submit" class="btn btn-primary w-100 shadow-sm">Submit</button>
+                </div>
+            </form>
+            
+            <div class="text-center mb-2">
+                <small class="text-muted">Already registered? <a href="/login" class="text-decoration-none">Login here</a></small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
