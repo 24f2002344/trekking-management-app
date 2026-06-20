@@ -14,10 +14,14 @@ def login_route_handler():
         if not user:
             return redirect(url_for('register'))
         if check_password_hash(user.password,password):
+            if user.role == "staff" and not user.is_approved:
+                return "<h3>Access denied: waiting from admin approval</h3>"
             login_user(user)
 
             if user.role=='admin':
                 return redirect(url_for('admin_dashboard'))
+            elif user.role == 'staff':
+                return redirect(url_for('staff_dashboard'))
             else:
                 return redirect(url_for('user_dashboard'))
     return render_template('login.html')
