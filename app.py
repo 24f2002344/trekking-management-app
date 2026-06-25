@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for 
 from flask_login import LoginManager 
-from models import db, User
+from models import db, User, Trek
 from routes.login import login_route_handler
 from routes.registeration import registraiton_route_handler
+from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler
 
 app = Flask(__name__)
 
@@ -13,12 +14,11 @@ app.config['SECRET_KEY'] = 'secret_key_for_my_project'
 
 db.init_app(app)
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# User Loader Callback (Tells Flask-Login how to look up a user tracking ID)
+# User Loader Callback
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -43,18 +43,40 @@ def register():
 def home():
     return redirect(url_for('login'))
 
-# ROLE PROTECTION DEMO PAGES
-@app.route('/admin/dashboard')
+# --- ADMIN PANEL & MANAGEMENT ROUTES ---
+
+# 1. Main Bento Dashboard Page
+@app.route('/admin/dashboard', methods=['GET'])
 def admin_dashboard():
-    return "admin dashboard."
+    return admin_dashboard_handler()
+
+# 2. Status Toggle Form Target Action Route
+@app.route('/admin/user/toggle/<int:user_id>', methods=['POST'])
+def admin_toggle_user(user_id):
+    return toggle_user_status_handler(user_id)
+
+# 3. Staff Approval Form Target Action Route
+@app.route('/admin/approve_staff/<int:user_id>', methods=['POST'])
+def admin_approve_staff(user_id):
+    return approve_staff_handler(user_id)
+
+@app.route('/admin/trek/add',methods=['POST'])
+def admin_add_trek():
+    return add_trek_handler()
+
+
+# --- GENERAL USER & STAFF PORTALS (PLACEHOLDERS) ---
 
 @app.route('/user/dashboard')
 def user_dashboard():
-    return "user dashboard."
+    # Placeholder layout until user panel milestone
+    return "Welcome to the Trekker Dashboard!"
 
 @app.route('/staff/dashboard')
 def staff_dashboard():
-    return "welcome, dear staff member"
+    # Placeholder layout until staff panel milestone
+    return "Welcome to the Staff Workspace!"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

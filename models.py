@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(100), nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default='user')
+    role = db.Column(db.String(20), nullable=False, default='trekker')
     status = db.Column(db.String(20), nullable=False, default='active')
     is_approved = db.Column(db.Boolean, default=False)
 
