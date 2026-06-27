@@ -73,3 +73,19 @@ def add_trek_handler():
      db.session.add(new_trek)
      db.session.commit()
      return redirect(url_for('admin_dashboard'))
+
+def assign_staff_to_trek_handler():
+     trek_id = request.form.get('trek_id')
+     staff_id = request.form.get('staff_id')
+     
+     if not trek_id or not staff_id:
+          print("DEBUG: Missing form values, skipping assignment!")
+          return redirect(url_for('admin_dashboard'))
+
+     trek = Trek.query.get_or_404(int(trek_id))
+     trek.assigned_staff_id = int(staff_id)
+          
+     db.session.add(trek)
+     db.session.commit()
+     
+     return redirect(url_for('admin_dashboard'))

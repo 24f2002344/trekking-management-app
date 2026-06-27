@@ -1,0 +1,58 @@
+<div class="tab-pane fade" id="staff-pane" role="tabpanel">
+    <div class="bento-card">
+        <h5 class="mb-3 text-secondary">Staff Approvals</h5>
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Approval</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users if user.role == 'staff' %}
+                <tr>
+                    <td class="text-muted">#{{ user.id }}</td>
+                    <td><strong>{{ user.full_name }}</strong><br><small class="text-muted">@{{
+                            user.username }}</small></td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_approved %}
+                        <span class="badge bg-success rounded-pill px-2.5">Approved</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark rounded-pill px-2.5">Pending
+                            Approval</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.status == 'active' %}
+                        <span class="badge bg-success rounded-pill px-2.5">Active</span>
+                        {% else %}
+                        <span class="badge bg-danger rounded-pill px-2.5">Deactivated</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="d-inline-flex gap-2">
+                            {% if not user.is_approved %}
+                            <form action="/admin/approve_staff/{{ user.id }}" method="POST" class="m-0">
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            {% endif %}
+                            <form action="/admin/user/toggle/{{ user.id }}" method="POST" class="m-0">
+                                <button type="submit"
+                                    class="btn {% if user.status == 'active' %}btn-outline-danger{% else %}btn-outline-success{% endif %} btn-sm">
+                                    {% if user.status == 'active' %}Deactivate{% else %}Activate{%
+                                    endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

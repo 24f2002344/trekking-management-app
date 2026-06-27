@@ -3,7 +3,7 @@ from flask_login import LoginManager
 from models import db, User, Trek
 from routes.login import login_route_handler
 from routes.registeration import registraiton_route_handler
-from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler
+from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler, assign_staff_to_trek_handler
 
 app = Flask(__name__)
 
@@ -76,6 +76,10 @@ def user_dashboard():
 def staff_dashboard():
     # Placeholder layout until staff panel milestone
     return "Welcome to the Staff Workspace!"
+
+@app.route('/admin/trek/assign_staff', methods=['POST'])
+def admin_assign_staff():
+    return assign_staff_to_trek_handler()
 
 
 if __name__ == '__main__':
