@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <!-- Bootstrap CSS Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons Font -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #fdfdfd;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* Clean borders instead of heavy shadows */
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Sidebar Navigation Alignment */
+        .sidebar-container {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.25rem;
+            min-height: 75vh;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            font-weight: 700;
+            padding-left: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-pills .nav-link {
+            color: #495057;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 0.6rem 1rem;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.15s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #000000;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd !important; /* Standard clean Bootstrap blue */
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <nav class="navbar navbar-light bg-white border-bottom py-3 mb-4">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand fw-bold text-dark fs-5">
+                <i class="bi bi-compass me-2 text-primary"></i>User Dashboard
+            </span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-muted small">Welcome, <strong>{{ current_user.email.split('@')[0] }}</strong></span>
+                <a href="/logout" class="btn btn-outline-danger btn-sm px-3" style="border-radius: 6px;">Sign Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Workspace Frame Container -->
+    <div class="container-fluid px-4">
+        <div class="row g-4">
+            
+            <!-- LEFT COLUMN: SIDEBAR NAVIGATION -->
+            <div class="col-md-3">
+                <div class="sidebar-container">
+                    <div class="sidebar-title">Navigation</div>
+                    <div class="nav nav-pills flex-column" id="userTab" role="tablist">
+                        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-pane" type="button" role="tab">
+                            <i class="bi bi-grid-1x2-fill me-2"></i>Dashboard
+                        </button>
+                        <button class="nav-link" id="browse-tab" data-bs-toggle="tab" data-bs-target="#browse-pane" type="button" role="tab">
+                            <i class="bi bi-compass-fill me-2"></i>Browse Treks
+                        </button>
+                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-pane" type="button" role="tab">
+                            <i class="bi bi-clock-history me-2"></i>Trekking History
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: MULTI-PANE INTERACTIVE CONTENT AREA -->
+            <div class="col-md-9">
+                <div class="tab-content" id="userTabContent">
+                    
+                    <!-- PANE 1: DASHBOARD OVERVIEW MAPPING -->
+                    <div class="tab-pane fade show active" id="dashboard-pane" role="tabpanel">
+                        <!-- Top Stat Summary Bento Grid Cards -->
+                        <div class="row g-3 mb-2">
+                            <div class="col-md-6">
+                                <div class="bento-card text-center py-4">
+                                    <span class="text-uppercase text-muted small fw-bold tracking-wide">My Expeditions</span>
+                                    <h2 class="fw-bold mt-2 mb-0 text-dark">{{ bookings|length }} Trips</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bento-card text-center py-4">
+                                    <span class="text-uppercase text-muted small fw-bold tracking-wide">Account Level</span>
+                                    <h2 class="fw-bold mt-2 mb-0 text-primary">Verified Tracker</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Filter Box Component -->
+                        <div class="bento-card mb-4">
+                            <h6 class="fw-bold text-dark mb-3">Quick Filter Destinations</h6>
+                            <form method="GET" action="/user/dashboard" class="row g-2">
+                                <div class="col-md-6">
+                                    <input type="text" name="search" class="form-control form-control-sm py-2" placeholder="Search by trek route name..." value="{{ request.args.get('search', '') }}">
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="difficulty" class="form-select form-select-sm py-2">
+                                        <option value="">-- All Levels --</option>
+                                        <option value="Easy" {% if request.args.get('difficulty') == 'Easy' %}selected{% endif %}>Easy</option>
+                                        <option value="Moderate" {% if request.args.get('difficulty') == 'Moderate' %}selected{% endif %}>Moderate</option>
+                                        <option value="Hard" {% if request.args.get('difficulty') == 'Hard' %}selected{% endif %}>Hard</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100 py-2">Filter</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Dynamic Expeditions Availability Table -->
+                        <div class="bento-card">
+                            <h6 class="fw-bold text-dark mb-3">Available Expeditions</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size: 14px;">
+                                    <thead class="table-light text-muted">
+                                        <tr>
+                                            <th>Trek Route Name</th>
+                                            <th>Location</th>
+                                            <th>Difficulty</th>
+                                            <th>Slots Remaining</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for trek in treks %}
+                                        <tr>
+                                            <td>
+                                                <span class="fw-bold text-dark">{{ trek.name }}</span><br>
+                                                <small class="text-muted">{{ trek.duration if trek.duration else 'N/A' }}</small>
+                                            </td>
+                                            <td class="text-secondary">{{ trek.location }}</td>
+                                            <td><span class="badge bg-secondary-subtle text-secondary px-2 py-1">{{ trek.difficulty }}</span></td>
+                                            <td class="fw-semibold text-dark">{{ trek.available_slots }} / {{ trek.total_slots }}</td>
+                                            <td>
+                                                {% if trek.available_slots > 0 %}
+                                                <form action="/user/book/{{ trek.id }}" method="POST" class="m-0">
+                                                    <button type="submit" class="btn btn-primary btn-sm px-3">Book Now</button>
+                                                </form>
+                                                {% else %}
+                                                <span class="badge bg-danger-subtle text-danger px-2 py-1">Sold Out</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">
+                                                <i class="bi bi-exclamation-circle me-1"></i> No matching treks found.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PANE 2: BROWSE CARDS CONTAINER (With dynamic expanding descriptions on click) -->
+                    <div class="tab-pane fade" id="browse-pane" role="tabpanel">
+                        <h5 class="fw-bold mb-4 text-dark">Explore Destinations</h5>
+                        <div class="row g-3">
+                            {% for trek in treks %}
+                            <div class="col-md-4">
+                                <div class="bento-card h-100 d-flex flex-column justify-content-between" data-bs-toggle="collapse" data-bs-target="#desc-{{ trek.id }}" style="cursor: pointer;">
+                                    
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-start mb-1">
+                                            <h6 class="fw-bold text-dark mb-0">{{ trek.name }}</h6>
+                                            <span class="badge bg-light text-muted border px-2 py-0.5" style="font-size: 11px;">{{ trek.difficulty }}</span>
+                                        </div>
+                                        <p class="text-muted small mb-2">
+                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ trek.location }}
+                                        </p>
+                                        
+                                        <!-- Collapsible details tray drawer drawer -->
+                                        <div class="collapse" id="desc-{{ trek.id }}">
+                                            <div class="py-2 text-secondary small border-top mt-2 mb-1" style="line-height: 1.4;">
+                                                {{ trek.description if trek.description else "No specific descriptions logged for this mountain route." }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2" onclick="event.stopPropagation();">
+                                        <div>
+                                            <small class="text-muted text-uppercase d-block" style="font-size: 9px; letter-spacing: 0.3px;">Price</small>
+                                            <span class="fw-bold text-dark">₹{{ trek.price }}</span>
+                                        </div>
+                                        {% if trek.available_slots > 0 %}
+                                        <form action="/user/book/{{ trek.id }}" method="POST" class="m-0">
+                                            <button type="submit" class="btn btn-primary btn-sm px-3 fw-medium">Book</button>
+                                        </form>
+                                        {% else %}
+                                        <button class="btn btn-secondary btn-sm px-3 disabled" disabled>Full</button>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="col-12 text-center text-muted py-5">
+                                <i class="bi bi-map-fill fs-2 mb-2 d-block"></i> No expeditions currently available.
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- PANE 3: BOOKINGS HISTORY LOG VIEW -->
+                    <div class="tab-pane fade" id="history-pane" role="tabpanel">
+                        <div class="bento-card">
+                            <h5 class="fw-bold text-dark mb-3">Trekking History</h5>
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0" style="font-size: 14px;">
+                                    <thead class="table-light text-muted">
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>Destination Route</th>
+                                            <th>Date Registered</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in bookings %}
+                                        <tr>
+                                            <td class="text-muted fw-mono">#BKG-00{{ booking.id }}</td>
+                                            <td class="fw-bold text-dark">{{ booking.trek.name if booking.trek else 'Unknown Expedition' }}</td>
+                                            <td class="text-secondary">{{ booking.created_at.strftime('%d-%b-%Y') if booking.created_at else 'Recent' }}</td>
+                                            <td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Confirmed</span></td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-4">
+                                                <i class="bi bi-journal-x me-1"></i> You haven't reserved any trekking expeditions yet.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Bootstrap Core JS bundle engine -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

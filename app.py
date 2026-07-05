@@ -1,13 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for 
-from flask_login import LoginManager 
+from flask_login import LoginManager,login_required,current_user
 from models import db, User, Trek
 from routes.login import login_route_handler
 from routes.registeration import registraiton_route_handler
 from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler, assign_staff_to_trek_handler
-
+from routes.user import book_trek_action_handler
 app = Flask(__name__)
 
 # Basic database configuration
+
+
+# Flask automatically knows to look inside the /instance folder for this!
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///trek.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secret_key_for_my_project'
@@ -67,10 +70,20 @@ def admin_add_trek():
 
 # --- GENERAL USER & STAFF PORTALS (PLACEHOLDERS) ---
 
-@app.route('/user/dashboard')
+# 1. Ensure you are importing the handler from your routes folder at the top of app.py
+from routes.user import user_dashboard_handler
+
+# 2. Make sure the route function looks exactly like this:
+@app.route('/user/dashboard', methods=['GET'])
+@login_required
 def user_dashboard():
-    # Placeholder layout until user panel milestone
-    return "Welcome to the Trekker Dashboard!"
+    # Call the code inside user.py that returns the diagnostic variables
+    return user_dashboard_handler()
+
+@app.route('/user/book/<int:trek_id>', methods=['POST'])
+@login_required
+def book_trek(trek_id):
+    return book_trek_action_handler(trek_id)
 
 @app.route('/staff/dashboard')
 def staff_dashboard():

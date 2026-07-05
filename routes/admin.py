@@ -63,7 +63,7 @@ def add_trek_handler():
           duration=duration,
           price=float(price) if price else 0.0,
           total_slots=int(total_slots) if total_slots else 0,
-          available_slotes=int(total_slots) if total_slots else 0,
+          available_slots=int(total_slots) if total_slots else 0,
           start_date=parsed_start_date,
           end_date=parsed_end_date,
           description=description

@@ -1,0 +1,46 @@
+from flask import render_template, redirect, request, url_for,flash
+from flask_login import current_user
+from models import db, Trek, Booking
+
+from models import Trek, Booking, db
+
+from flask import render_template, request
+from flask_login import current_user
+from models import db, Trek, Booking
+
+def user_dashboard_handler():
+    # 1. Capture and strip arguments quickly
+    search = request.args.get('search', '').strip()
+    difficulty = request.args.get('difficulty', '').strip()
+    
+    # 2. Start query and stack filters compactly using implicit truthiness
+    query = Trek.query
+    if search:
+        query = query.filter(Trek.name.contains(search))
+    if difficulty:
+        query = query.filter(Trek.difficulty == difficulty)
+        
+    # 3. Fetch data and return in one go
+    return render_template(
+        'user_dashboard.html', 
+        treks=query.all(), 
+        bookings=Booking.query.filter_by(user_id=current_user.id).all()
+    )
+
+def book_trek_action_handler(trek_id):
+
+    trek = Trek.query.get_or_404(trek_id)
+
+    if trek.available_slots>0:
+        trek.available_slots -=1;
+        new_booking = Booking(
+            user_id=current_user.id,
+            trek_id=trek.id
+        )
+        db.session.add(new_booking)
+        db.session.commit()
+        flash(f"Successfully booked your expedition to {trek.name}!", "success")
+    else:
+        flash("Sorry, this trek expedition window is completely full!", "danger")
+    
+    return redirect(url_for('user_dashboard'))
