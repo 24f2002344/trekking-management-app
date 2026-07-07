@@ -5,6 +5,7 @@ from routes.login import login_route_handler
 from routes.registeration import registraiton_route_handler
 from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler, assign_staff_to_trek_handler
 from routes.user import book_trek_action_handler
+from routes.staff import staff_dashboard_logic,staff_update_trek_logic
 app = Flask(__name__)
 
 # Basic database configuration
@@ -85,10 +86,16 @@ def user_dashboard():
 def book_trek(trek_id):
     return book_trek_action_handler(trek_id)
 
-@app.route('/staff/dashboard')
+@app.route('/staff/dashboard',methods = ['GET'])
+@login_required
 def staff_dashboard():
     # Placeholder layout until staff panel milestone
-    return "Welcome to the Staff Workspace!"
+    return staff_dashboard_logic()
+
+@app.route('/staff/update-trek/<int:trek_id>',methods=['POST'])
+@login_required
+def staff_update_trek(trek_id):
+    return staff_update_trek_logic(trek_id)
 
 @app.route('/admin/trek/assign_staff', methods=['POST'])
 def admin_assign_staff():
