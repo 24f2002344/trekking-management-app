@@ -1,5 +1,5 @@
 from flask import render_template, redirect, request, url_for
-from models import db, User, Trek
+from models import db, User, Trek, Booking
 from datetime import datetime
 
 def admin_dashboard_handler():
@@ -7,22 +7,58 @@ def admin_dashboard_handler():
           'total_users': User.query.filter_by(role='trekker').count(),
           'total_staff': User.query.filter_by(role='staff').count(),
           'total_treks': Trek.query.count(),
-          'total_bookings': 0
+          'total_bookings': Booking.query.count()
      }
      
      search_query = request.args.get('search', '').strip()
+     active_tab = request.args.get('tab','users')
 
-     treks = Trek.query.all()
-
-     if search_query:
+     #FOR USER TAB
+     if search_query and active_tab=='users':
           if search_query.isdigit():
-               users = User.query.filter_by(id=int(search_query)).all()
+               users = User.query.filter_by(id=int(search_query), role = 'trekker').all()
           else:
-               users = User.query.filter(User.full_name.contains(search_query)).all()
+               users = User.query.filter(User.full_name.contains(search_query), User.role == 'trekker').all()
      else:
-          users = User.query.all()
+          users = User.query.filter_by(role = 'trekker').all()
      
-     return render_template('admin_dashboard.html', stats=stats, users=users, treks=treks)
+     #FOR TREK TAB
+     if search_query and active_tab=='treks':
+          if search_query.isdigit():
+               treks = Trek.query.filter_by(id=int(search_query)).all()
+          else:
+               treks = Trek.query.filter((Trek.name.contains(search_query)).all() | Trek.location.contains(search_query)).all()
+     else:
+          treks = Trek.query.all()
+     
+     #FOR STAFF TAB
+     if search_query and active_tab=='staff':
+          if search_query.isdigit():
+               staff_members = User.query.filter_by(id=int(search_query), role='staff').all()
+          else:
+               staff_members = User.query.filter(User.full_name.contains(search_query), User.role=='staff').all()
+     else:
+          staff_members = User.query.filter_by(role='staff').all()
+
+     #FOR BOOKINGS TAB
+     if search_query and active_tab=='bookings':
+          if search_query.isdigit():
+               bookings = Booking.query.filter_by(id=int(search_query)).all()
+          else:
+               bookings = Booking.query.join(Trek).join(User, Booking.user_id==User.id).filter(
+                    (Trek.name.contains(search_query)) |
+                    (User.full_name.contains(search_query))
+               ).all()
+     else:
+          bookings = Booking.query.all()
+     
+     return render_template('admin_dashboard.html',
+                            stats=stats,
+                            users=users,
+                            treks=treks,
+                            staff_members=staff_members,
+                            bookings=bookings,
+                            active_tab=active_tab)
 
 
 def toggle_user_status_handler(user_id):

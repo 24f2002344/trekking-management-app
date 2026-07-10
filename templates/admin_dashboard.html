@@ -51,18 +51,25 @@
                 <div class="bento-card">
                     <h6 class="text-muted small text-uppercase mb-3">Navigation</h6>
                     <div class="nav flex-column nav-pills" id="adminTab" role="tablist">
-                        <button class="nav-link active border-0" id="users-tab" data-bs-toggle="tab"
-                            data-bs-target="#users-pane" type="button" role="tab"><i
-                                class="bi bi-people me-2"></i>Users</button>
-                        <button class="nav-link border-0" id="staff-tab" data-bs-toggle="tab"
-                            data-bs-target="#staff-pane" type="button" role="tab"><i
-                                class="bi bi-person-badge me-2"></i>Staff</button>
-                        <button class="nav-link border-0" id="treks-tab" data-bs-toggle="tab"
-                            data-bs-target="#treks-pane" type="button" role="tab"><i
-                                class="bi bi-compass me-2"></i>Treks</button>
-                        <button class="nav-link border-0" id="bookings-tab" data-bs-toggle="tab"
-                            data-bs-target="#bookings-pane" type="button" role="tab"><i
-                                class="bi bi-journal-text me-2"></i>Bookings</button>
+                        <a href="/admin/dashboard?tab=users"
+                            class="nav-link {% if active_tab == 'users' %}active{% endif %} border-0">
+                            <i class="bi bi-people me-2"></i>Users
+                        </a>
+
+                        <a href="/admin/dashboard?tab=staff"
+                            class="nav-link {% if active_tab == 'staff' %}active{% endif %} border-0">
+                            <i class="bi bi-person-badge me-2"></i>Staff
+                        </a>
+
+                        <a href="/admin/dashboard?tab=treks"
+                            class="nav-link {% if active_tab == 'treks' %}active{% endif %} border-0">
+                            <i class="bi bi-compass me-2"></i>Treks
+                        </a>
+
+                        <a href="/admin/dashboard?tab=bookings"
+                            class="nav-link {% if active_tab == 'bookings' %}active{% endif %} border-0">
+                            <i class="bi bi-journal-text me-2"></i>Bookings
+                        </a>
                     </div>
                 </div>
             </div>
@@ -75,6 +82,9 @@
                             <span class="input-group-text bg-white border-end-0 text-muted">
                                 <i class="bi bi-search"></i>
                             </span>
+
+                            <input type="hidden" name="tab" value="{{ active_tab }}">
+
                             <input type="text" name="search" class="form-control border-start-0 ps-1"
                                 placeholder="Filter entries by name or unique ID..."
                                 value="{{ request.args.get('search', '') }}">
@@ -112,6 +122,7 @@
 
                 <div class="tab-content" id="adminTabContent">
 
+                    {% if active_tab == 'users' %}
                     <div class="tab-pane fade show active" id="users-pane" role="tabpanel">
                         <div class="bento-card">
                             <h5 class="mb-3 text-secondary">Users Directory</h5>
@@ -126,7 +137,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for user in users if user.role == 'trekker' %}
+                                    {% for user in users %}
                                     <tr>
                                         <td>#{{ user.id }}</td>
                                         <td><strong>{{ user.full_name }}</strong><br><small class="text-muted">@{{
@@ -139,14 +150,17 @@
                                             </span>
                                         </td>
                                         <td class="text-end">
-                                            <form action="/admin/user/toggle/{{ user.id }}" method="POST" class="m-0">
+                                            <form action="/admin/user/toggle/{{ user.id }}?tab={{ active_tab }}" method="POST" class="m-0">
                                                 <button type="submit"
                                                     class="btn {% if user.status == 'active' %}btn-outline-danger{% else %}btn-outline-success{% endif %} btn-sm">
-                                                    {% if user.status == 'active' %}Deactivate{% else %}Activate{% endif
-                                                    %}
+                                                    {% if user.status == 'active' %}Deactivate{% else %}Activate{% endif %}
                                                 </button>
                                             </form>
                                         </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">No users found matching parameters.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -154,12 +168,16 @@
                         </div>
                     </div>
 
-                    {% include 'admin_dashboard_staff.html' %}
+                    {% elif active_tab == 'staff' %}
+                        {% include 'admin_dashboard_staff.html' %}
 
-                    {% include 'admin_dashboard_treks.html' %}
+                    {% elif active_tab == 'treks' %}
+                        {% include 'admin_dashboard_treks.html' %}
 
-                    {% include 'admin_dashboard_bookings.html' %}
-                
+                    {% elif active_tab == 'bookings' %}
+                        {% include 'admin_dashboard_bookings.html' %}
+
+                    {% endif %}
 
                 </div>
             </div>

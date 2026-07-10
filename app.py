@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for 
-from flask_login import LoginManager,login_required,current_user
+from flask import Flask, render_template, request, redirect, url_for, flash 
+from flask_login import LoginManager,login_required,current_user,logout_user
 from models import db, User, Trek
 from routes.login import login_route_handler
 from routes.registeration import registraiton_route_handler
@@ -37,6 +37,14 @@ with app.app_context():
 def login():
     return login_route_handler()
 
+# LOGOUT ROUTE
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been successfully signed out", "info")
+    return redirect(url_for('login'))
+
 # REGISTRATION ROUTE
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -51,6 +59,7 @@ def home():
 
 # 1. Main Bento Dashboard Page
 @app.route('/admin/dashboard', methods=['GET'])
+@login_required
 def admin_dashboard():
     return admin_dashboard_handler()
 
