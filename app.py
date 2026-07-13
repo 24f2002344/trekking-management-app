@@ -96,6 +96,13 @@ def user_dashboard():
 def book_trek(trek_id):
     return book_trek_action_handler(trek_id)
 
+@app.route('/user/profile/update', methods=['POST'])
+@login_required
+def user_profile_update():
+    # Import the handler dynamically or ensure 'from routes.user import user_profile_update_handler' is at the top
+    from routes.user import user_profile_update_handler
+    return user_profile_update_handler()
+
 @app.route('/staff/dashboard',methods = ['GET'])
 @login_required
 def staff_dashboard():
