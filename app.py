@@ -6,6 +6,7 @@ from routes.registeration import registraiton_route_handler
 from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler, assign_staff_to_trek_handler
 from routes.user import book_trek_action_handler
 from routes.staff import staff_dashboard_logic,staff_update_trek_logic
+from routes.payment import initiate_booking,payment_checkout
 app = Flask(__name__)
 
 # Basic database configuration
@@ -109,6 +110,18 @@ def staff_update_trek(trek_id):
 @app.route('/admin/trek/assign_staff', methods=['POST'])
 def admin_assign_staff():
     return assign_staff_to_trek_handler()
+
+#PAYMENT ROUTE
+@app.route('/trek/book/<int:trek_id>', methods=['POST'])
+@login_required
+def payment_function(trek_id):
+    return initiate_booking(trek_id)
+
+@app.route('/trek/checkout', methods=['GET', 'POST'])
+@login_required
+def payment_checkout_function():
+    return payment_checkout()
+
 
 
 if __name__ == '__main__':

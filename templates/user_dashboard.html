@@ -175,8 +175,20 @@
                                             <td class="fw-semibold text-dark">{{ trek.available_slots }} / {{ trek.total_slots }}</td>
                                             <td>
                                                 {% if trek.available_slots > 0 %}
-                                                <form action="/user/book/{{ trek.id }}" method="POST" class="m-0">
-                                                    <button type="submit" class="btn btn-primary btn-sm px-3">Book Now</button>
+                                                <!-- Dynamic Form Integration: Quantities linked to Redirect Checkout Matrix -->
+                                                <form action="/trek/book/{{ trek.id }}" method="POST" class="d-flex align-items-center gap-2 m-0">
+                                                    <div style="width: 80px;">
+                                                        <input type="number" 
+                                                               name="slots_requested" 
+                                                               class="form-control form-control-sm text-center font-monospace" 
+                                                               value="1" 
+                                                               min="1" 
+                                                               max="{{ trek.available_slots }}" 
+                                                               required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm px-3 text-nowrap">
+                                                        <i class="bi bi-cart-plus me-1"></i>Book Now
+                                                    </button>
                                                 </form>
                                                 {% else %}
                                                 <span class="badge bg-danger-subtle text-danger px-2 py-1">Sold Out</span>
@@ -196,7 +208,7 @@
                         </div>
                     </div>
 
-                    <!-- PANE 2: BROWSE CARDS CONTAINER (With dynamic expanding descriptions on click) -->
+                    <!-- PANE 2: BROWSE CARDS CONTAINER -->
                     <div class="tab-pane fade" id="browse-pane" role="tabpanel">
                         <h5 class="fw-bold mb-4 text-dark">Explore Destinations</h5>
                         <div class="row g-3">
@@ -213,7 +225,7 @@
                                             <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ trek.location }}
                                         </p>
                                         
-                                        <!-- Collapsible details tray drawer drawer -->
+                                        <!-- Collapsible details tray drawer -->
                                         <div class="collapse" id="desc-{{ trek.id }}">
                                             <div class="py-2 text-secondary small border-top mt-2 mb-1" style="line-height: 1.4;">
                                                 {{ trek.description if trek.description else "No specific descriptions logged for this mountain route." }}
@@ -227,8 +239,18 @@
                                             <span class="fw-bold text-dark">₹{{ trek.price }}</span>
                                         </div>
                                         {% if trek.available_slots > 0 %}
-                                        <form action="/user/book/{{ trek.id }}" method="POST" class="m-0">
-                                            <button type="submit" class="btn btn-primary btn-sm px-3 fw-medium">Book</button>
+                                        <!-- Dynamic Form Integration inside Explore Panel View -->
+                                        <form action="/trek/book/{{ trek.id }}" method="POST" class="d-flex align-items-center gap-2 m-0">
+                                            <div style="width: 70px;">
+                                                <input type="number" 
+                                                       name="slots_requested" 
+                                                       class="form-control form-control-sm text-center" 
+                                                       value="1" 
+                                                       min="1" 
+                                                       max="{{ trek.available_slots }}" 
+                                                       required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-sm px-3 fw-medium text-nowrap">Book</button>
                                         </form>
                                         {% else %}
                                         <button class="btn btn-secondary btn-sm px-3 disabled" disabled>Full</button>
