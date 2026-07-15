@@ -70,6 +70,12 @@
                             class="nav-link {% if active_tab == 'bookings' %}active{% endif %} border-0">
                             <i class="bi bi-journal-text me-2"></i>Bookings
                         </a>
+
+                        <a href="/admin/dashboard?tab=analytics"
+                            class="nav-link {% if active_tab == 'analytics' %}active{% endif %} border-0">
+                            <i class="bi bi-bar-chart-fill me-2"></i>Data Visualization
+                        </a>
+
                     </div>
                 </div>
             </div>
@@ -88,7 +94,7 @@
                             <input type="text" name="search" class="form-control border-start-0 ps-1"
                                 placeholder="Filter entries by name or unique ID..."
                                 value="{{ request.args.get('search', '') }}">
-                            <button type="submit" class="btn btn-dark px-4">Search</button>
+                            <button type="submit" class="btn btn-primary px-4">Search</button>
                         </div>
                     </form>
                 </div>
@@ -150,17 +156,20 @@
                                             </span>
                                         </td>
                                         <td class="text-end">
-                                            <form action="/admin/user/toggle/{{ user.id }}?tab={{ active_tab }}" method="POST" class="m-0">
+                                            <form action="/admin/user/toggle/{{ user.id }}?tab={{ active_tab }}"
+                                                method="POST" class="m-0">
                                                 <button type="submit"
                                                     class="btn {% if user.status == 'active' %}btn-outline-danger{% else %}btn-outline-success{% endif %} btn-sm">
-                                                    {% if user.status == 'active' %}Deactivate{% else %}Activate{% endif %}
+                                                    {% if user.status == 'active' %}Deactivate{% else %}Activate{% endif
+                                                    %}
                                                 </button>
                                             </form>
                                         </td>
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">No users found matching parameters.</td>
+                                        <td colspan="5" class="text-center text-muted py-4">No users found matching
+                                            parameters.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -169,13 +178,96 @@
                     </div>
 
                     {% elif active_tab == 'staff' %}
-                        {% include 'admin_dashboard_staff.html' %}
+                    {% include 'admin_dashboard_staff.html' %}
 
                     {% elif active_tab == 'treks' %}
-                        {% include 'admin_dashboard_treks.html' %}
+                    {% include 'admin_dashboard_treks.html' %}
 
                     {% elif active_tab == 'bookings' %}
-                        {% include 'admin_dashboard_bookings.html' %}
+                    {% include 'admin_dashboard_bookings.html' %}
+
+                    <!-- Data Visualization Content Pane -->
+                    {% elif active_tab == 'analytics' %}
+                    <div class="bento-card mb-4">
+                        <h5 class="mb-4 text-secondary">Platform Statistics Overview</h5>
+
+                        <div class="row g-4">
+                            <!-- Bar Chart Container -->
+                            <div class="col-md-8">
+                                <div class="border rounded p-3 bg-light">
+                                    <canvas id="mainBarChart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Pie Chart Container -->
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 bg-light h-100 d-flex align-items-center">
+                                    <canvas id="userRatioPieChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inject Chart.js Library -->
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // 1. MAIN BAR CHART (Overall Metrics)
+                            const barCtx = document.getElementById('mainBarChart').getContext('2d');
+                            new Chart(barCtx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Registered Trekkers', 'Staff Guides', 'Active Treks', 'Total Bookings'],
+                                    datasets: [{
+                                        label: 'Platform Metrics',
+                                        // Injecting Python Jinja variables directly into the JS!
+                                        data: [
+                                            {{ stats.total_users }},
+                                    {{ stats.total_staff }}, 
+                            {{ stats.total_treks }},
+                            {{ stats.total_bookings }}
+                        ],
+                            backgroundColor: [
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                            borderWidth: 1,
+                            borderRadius: 6
+                    }]
+                },
+                            options: {
+                            responsive: true,
+                            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                            plugins: { legend: { display: false } }
+                        }
+            });
+
+                        // 2. USER RATIO PIE CHART (Staff vs Trekkers)
+                        const pieCtx = document.getElementById('userRatioPieChart').getContext('2d');
+                        new Chart(pieCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Trekkers', 'Staff'],
+                                datasets: [{
+                                    data: [{{ stats.total_users }}, {{ stats.total_staff }}],
+                            backgroundColor: ['rgba(54, 162, 235, 0.8)', 'rgba(255, 159, 64, 0.8)'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                },
+                            options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'bottom' },
+                                title: { display: true, text: 'User Base Ratio' }
+                            }
+                        }
+            });
+        });
+                    </script>
 
                     {% endif %}
 

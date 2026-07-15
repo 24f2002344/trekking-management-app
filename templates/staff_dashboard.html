@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,67 +8,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body {
-            background-color: #fdfdfd;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-
-        /* Clean borders instead of heavy shadows */
-        .bento-card {
-            background: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        /* Sidebar Navigation Alignment */
-        .sidebar-container {
-            background: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 1.25rem;
-            min-height: 75vh;
-        }
-
-        .sidebar-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6c757d;
-            font-weight: 700;
-            padding-left: 0.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .nav-pills .nav-link {
-            color: #495057;
-            border-radius: 6px;
-            margin-bottom: 4px;
-            text-align: left;
-            width: 100%;
-            background: none;
-            border: none;
-            padding: 0.6rem 1rem;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.15s ease;
-        }
-
-        .nav-pills .nav-link:hover {
-            background-color: #f8f9fa;
-            color: #000000;
-        }
-
-        .nav-pills .nav-link.active {
-            background-color: #0d6efd !important;
-            color: #ffffff !important;
-        }
+        body { background-color: #fdfdfd; font-family: system-ui, -apple-system, sans-serif; }
+        .bento-card { background: #ffffff; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem; }
+        .sidebar-container { background: #ffffff; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.25rem; min-height: 75vh; }
+        .sidebar-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6c757d; font-weight: 700; padding-left: 0.5rem; margin-bottom: 0.75rem; }
+        .nav-pills .nav-link { color: #495057; border-radius: 6px; margin-bottom: 4px; text-align: left; width: 100%; background: none; border: none; padding: 0.6rem 1rem; font-size: 14px; display: flex; align-items: center; transition: background-color 0.15s ease; }
+        .nav-pills .nav-link:hover { background-color: #f8f9fa; color: #000000; }
+        .nav-pills .nav-link.active { background-color: #0d6efd !important; color: #ffffff !important; }
     </style>
 </head>
-
 <body>
+
+    <!-- Flash Messages Handler -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
     <nav class="navbar navbar-light bg-white border-bottom py-3 mb-4">
         <div class="container-fluid px-4">
@@ -85,22 +47,18 @@
 
     <div class="container-fluid px-4">
         <div class="row g-4">
-
             <div class="col-md-3">
                 <div class="sidebar-container">
                     <div class="sidebar-title">Navigation</div>
                     <div class="nav nav-pills flex-column" id="staffTab" role="tablist">
-                        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab"
-                            data-bs-target="#dashboard-pane" type="button" role="tab">
+                        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-pane" type="button" role="tab">
                             <i class="bi bi-grid-1x2-fill me-2"></i>Dashboard
                         </button>
-                        <button class="nav-link" id="my-treks-tab" data-bs-toggle="tab" data-bs-target="#my-treks-pane"
-                            type="button" role="tab">
-                            <i class="bi bi-compass-fill me-2"></i>My Treks
+                        <button class="nav-link" id="my-treks-tab" data-bs-toggle="tab" data-bs-target="#my-treks-pane" type="button" role="tab">
+                            <i class="bi bi-compass-fill me-2"></i>Manage Treks
                         </button>
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-pane"
-                            type="button" role="tab">
-                            <i class="bi bi-person-fill me-2"></i>Profile
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-pane" type="button" role="tab">
+                            <i class="bi bi-person-fill me-2"></i>Profile Setup
                         </button>
                     </div>
                 </div>
@@ -109,6 +67,7 @@
             <div class="col-md-9">
                 <div class="tab-content" id="staffTabContent">
 
+                    <!-- PANE 1: Dashboard Overview -->
                     <div class="tab-pane fade show active" id="dashboard-pane" role="tabpanel">
                         <div class="row g-3 mb-4">
                             <div class="col-md-4">
@@ -139,10 +98,9 @@
                                         <tr>
                                             <th>Trek Route Name</th>
                                             <th>Location</th>
-                                            <th>Difficulty</th>
-                                            <th>Registered Participants</th>
+                                            <th>Registered</th>
                                             <th>Slots Remaining</th>
-                                            <th>Status</th>
+                                            <th>Current Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -153,22 +111,21 @@
                                                 <small class="text-muted">{{ trek.duration if trek.duration else 'N/A' }}</small>
                                             </td>
                                             <td class="text-secondary">{{ trek.location }}</td>
-                                            <td><span class="badge bg-secondary-subtle text-secondary px-2 py-1">{{ trek.difficulty }}</span></td>
-                                            <td><span class="badge bg-primary-subtle text-primary px-2 py-1">{{ trek.bookings|length }} Registered</span></td>
+                                            <td><span class="badge bg-primary-subtle text-primary px-2 py-1">{{ trek.bookings|length }} Participants</span></td>
                                             <td class="fw-semibold text-dark">{{ trek.available_slots }} / {{ trek.total_slots }}</td>
                                             <td>
+                                                <!-- Current Status Output -->
+                                                <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 mb-1">{{ trek.status if trek.status else 'Upcoming' }}</span><br>
                                                 {% if trek.available_slots > 0 %}
-                                                <span class="badge bg-success-subtle text-success px-2 py-1">Open</span>
+                                                <span class="badge bg-success-subtle text-success px-2 py-1">Registration Open</span>
                                                 {% else %}
-                                                <span class="badge bg-danger-subtle text-danger px-2 py-1">Closed</span>
+                                                <span class="badge bg-danger-subtle text-danger px-2 py-1">Closed / Full</span>
                                                 {% endif %}
                                             </td>
                                         </tr>
                                         {% else %}
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted py-4">
-                                                <i class="bi bi-exclamation-circle me-1"></i> No assigned treks found.
-                                            </td>
+                                            <td colspan="5" class="text-center text-muted py-4"><i class="bi bi-exclamation-circle me-1"></i> No assigned treks found.</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -177,8 +134,9 @@
                         </div>
                     </div>
 
+                    <!-- PANE 2: Manage Treks -->
                     <div class="tab-pane fade" id="my-treks-pane" role="tabpanel">
-                        <h5 class="fw-bold mb-4 text-dark">Manage Assigned Expeditions</h5>
+                        <h4 class="fw-bold mb-4 text-dark">Manage Assigned Trek</h4>
                         
                         {% for trek in assigned_treks %}
                         <div class="bento-card mb-4 border border-secondary-subtle">
@@ -187,13 +145,25 @@
                                     <h5 class="fw-bold text-dark mb-1">{{ trek.name }}</h5>
                                     <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>{{ trek.location }}</p>
                                 </div>
-                                <span class="badge bg-dark px-3 py-2">Total Slots: {{ trek.total_slots }}</span>
+                                <span class="badge bg-primary px-3 py-2">Total Slots: {{ trek.total_slots }}</span>
                             </div>
 
                             <div class="row g-4">
                                 <div class="col-md-5 border-end pe-4">
-                                    <h6 class="fw-bold text-muted small text-uppercase mb-3">Modify Availability</h6>
+                                    <h6 class="fw-bold text-muted small text-uppercase mb-3">Modify Route Data</h6>
+                                    
                                     <form action="/staff/update-trek/{{ trek.id }}" method="POST">
+                                        <!-- Update Trek Status Dropdown -->
+                                        <div class="mb-3">
+                                            <label class="form-label small fw-semibold text-dark">Trek Status</label>
+                                            <select name="trek_status" class="form-select form-select-sm py-2">
+                                                <option value="Upcoming" {% if trek.status == 'Upcoming' %}selected{% endif %}>Upcoming</option>
+                                                <option value="Ongoing" {% if trek.status == 'Ongoing' %}selected{% endif %}>Ongoing (Started)</option>
+                                                <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Update Slots Logic -->
                                         <div class="mb-3">
                                             <label class="form-label small fw-semibold text-dark">Available Slots Remaining</label>
                                             <input type="number" name="available_slots" class="form-control form-control-sm py-2" 
@@ -202,7 +172,7 @@
                                                 Dropping slots to 0 automatically closes registration.
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-sm w-100 py-2">Save Slots Change</button>
+                                        <button type="submit" class="btn btn-primary btn-sm w-100 py-2">Save Trek Parameters</button>
                                     </form>
                                 </div>
 
@@ -212,15 +182,15 @@
                                         <table class="table table-sm table-hover align-middle mb-0" style="font-size: 13px;">
                                             <thead class="table-light sticky-top">
                                                 <tr>
-                                                    <th>User Account Email</th>
-                                                    <th class="text-end">Booking Reference</th>
+                                                    <th>User Account Name</th>
+                                                    <th>Contact Details</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for booking in trek.bookings %}
                                                 <tr>
-                                                    <td class="fw-semibold text-dark">{{ booking.trekker.email }}</td>
-                                                    <td class="text-end text-muted">#BKG-00{{ booking.id }}</td>
+                                                    <td class="fw-semibold text-dark">{{ booking.trekker.full_name }}</td>
+                                                    <td class="text-muted">{{ booking.trekker.phone }}<br><small>{{ booking.trekker.email }}</small></td>
                                                 </tr>
                                                 {% else %}
                                                 <tr>
@@ -240,9 +210,10 @@
                         {% endfor %}
                     </div>
 
+                    <!-- PANE 3: Profile Configuration -->
                     <div class="tab-pane fade" id="profile-pane" role="tabpanel">
                         <div class="bento-card" style="max-width: 500px;">
-                            <h5 class="fw-bold text-dark mb-1">Profile Settings</h5>
+                            <h5 class="fw-bold text-dark mb-1">Profile Security Settings</h5>
                             <p class="text-muted small mb-4">Keep your secure access credentials updated.</p>
                             
                             <form action="/staff/update-profile" method="POST">
@@ -252,7 +223,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label small fw-semibold text-dark">Change Password</label>
-                                    <input type="password" name="password" class="form-control" placeholder="Type new password here...">
+                                    <input type="password" name="password" class="form-control" placeholder="Leave blank to keep existing password" required>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm px-4 py-2">Update Credentials</button>
                             </form>
@@ -261,11 +232,9 @@
 
                 </div>
             </div>
-
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

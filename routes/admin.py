@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, flash
 from models import db, User, Trek, Booking
 from datetime import datetime
 
@@ -125,3 +125,23 @@ def assign_staff_to_trek_handler():
      db.session.commit()
      
      return redirect(url_for('admin_dashboard'))
+
+
+def delete_trek_handler(trek_id):
+    trek = Trek.query.get_or_404(trek_id)
+    
+    try:
+        # 1. Delete all bookings associated with this trek first to avoid DB constraint crashes
+        Booking.query.filter_by(trek_id=trek.id).delete()
+        
+        # 2. Delete the trek itself
+        db.session.delete(trek)
+        db.session.commit()
+        
+        flash(f"Expedition '{trek.name}' has been successfully removed from the system.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("An error occurred while trying to delete the trek.", "danger")
+        
+    # Redirect back to the treks tab
+    return redirect(url_for('admin_dashboard', tab='treks'))

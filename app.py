@@ -5,7 +5,7 @@ from routes.login import login_route_handler
 from routes.registeration import registraiton_route_handler
 from routes.admin import admin_dashboard_handler, toggle_user_status_handler, approve_staff_handler, add_trek_handler, assign_staff_to_trek_handler
 from routes.user import book_trek_action_handler
-from routes.staff import staff_dashboard_logic,staff_update_trek_logic
+from routes.staff import staff_dashboard_logic, staff_update_trek_logic, staff_update_profile_logic
 from routes.payment import initiate_booking,payment_checkout
 app = Flask(__name__)
 
@@ -54,7 +54,7 @@ def register():
 # ROOT PATH REDIRECT
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
 
 # --- ADMIN PANEL & MANAGEMENT ROUTES ---
 
@@ -96,12 +96,10 @@ def user_dashboard():
 def book_trek(trek_id):
     return book_trek_action_handler(trek_id)
 
-@app.route('/user/profile/update', methods=['POST'])
+@app.route('/staff/update-profile', methods=['POST'])
 @login_required
-def user_profile_update():
-    # Import the handler dynamically or ensure 'from routes.user import user_profile_update_handler' is at the top
-    from routes.user import user_profile_update_handler
-    return user_profile_update_handler()
+def staff_update_profile():
+    return staff_update_profile_logic()
 
 @app.route('/staff/dashboard',methods = ['GET'])
 @login_required

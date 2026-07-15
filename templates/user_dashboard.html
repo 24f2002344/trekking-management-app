@@ -86,7 +86,22 @@
             </div>
         </div>
     </nav>
-
+   
+    <!-- Flash Messages Handler -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert"
+            style="font-size: 14px;">
+            <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    
     <!-- Main Workspace Frame Container -->
     <div class="container-fluid px-4">
         <div class="row g-4">
@@ -184,7 +199,12 @@
                                         {% for trek in treks %}
                                         <tr>
                                             <td>
-                                                <span class="fw-bold text-dark">{{ trek.name }}</span><br>
+                                                <span class="fw-bold text-dark">{{ trek.name }}</span>
+                                                <span
+                                                    class="badge bg-info-subtle text-info border border-info-subtle ms-2"
+                                                    style="font-size: 10px;">
+                                                    {{ trek.status if trek.status else 'Upcoming' }}
+                                                </span><br>
                                                 <small class="text-muted">{{ trek.duration if trek.duration else 'N/A'
                                                     }}</small>
                                             </td>
@@ -240,8 +260,15 @@
                                     <div>
                                         <div class="d-flex justify-content-between align-items-start mb-1">
                                             <h6 class="fw-bold text-dark mb-0">{{ trek.name }}</h6>
-                                            <span class="badge bg-light text-muted border px-2 py-0.5"
-                                                style="font-size: 11px;">{{ trek.difficulty }}</span>
+                                            <div>
+                                                <span
+                                                    class="badge bg-info-subtle text-info border border-info-subtle px-2 py-0.5 me-1"
+                                                    style="font-size: 11px;">
+                                                    {{ trek.status if trek.status else 'Upcoming' }}
+                                                </span>
+                                                <span class="badge bg-light text-muted border px-2 py-0.5"
+                                                    style="font-size: 11px;">{{ trek.difficulty }}</span>
+                                            </div>
                                         </div>
                                         <p class="text-muted small mb-2">
                                             <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ trek.location }}

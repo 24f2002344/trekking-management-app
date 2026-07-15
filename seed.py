@@ -12,10 +12,10 @@ def seed_database():
         db.create_all()
         
         print("Hydrating Admin Account...")
-        # 👑 THE ADMIN
+        # THE ADMIN (Password remains admin123)
         admin_user = User(
             username="admin_trek",
-            email="admin@trekking.com",
+            email="admin@trekkings.com",
             password=generate_password_hash("admin123"),
             full_name="Arjun Sharma",
             phone="9876543210",
@@ -26,18 +26,18 @@ def seed_database():
         db.session.add(admin_user)
 
         print("Hydrating 10 Certified Staff Guide Records...")
-        # 🪪 10 STAFF MEMBERS / GUIDES
+        #10 STAFF MEMBERS / GUIDES (Password set to 0000)
         staff_data = [
-            ("guide_amit", "amit.negi@trekking.com", "Amit Negi", "9876543211"),
-            ("guide_priya", "priya.rawat@trekking.com", "Priya Rawat", "9876543212"),
-            ("guide_vikram", "vikram.bisht@trekking.com", "Vikram Bisht", "9876543213"),
-            ("guide_sneha", "sneha.thapa@trekking.com", "Sneha Thapa", "9876543214"),
-            ("guide_rajesh", "rajesh.kumar@trekking.com", "Rajesh Kumar", "9876543215"),
-            ("guide_anjali", "anjali.sharma@trekking.com", "Anjali Sharma", "9876543216"),
-            ("guide_rohit", "rohit.singh@trekking.com", "Rohit Singh", "9876543217"),
-            ("guide_kiran", "kiran.joshi@trekking.com", "Kiran Joshi", "9876543218"),
-            ("guide_manish", "manish.yadav@trekking.com", "Manish Yadav", "9876543219"),
-            ("guide_deepa", "deepa.shah@trekking.com", "Deepa Shah", "9876543220")
+            ("guide_amit", "amit.negi@trekkings.com", "Amit Negi", "9876543211"),
+            ("guide_priya", "priya.rawat@trekkings.com", "Priya Rawat", "9876543212"),
+            ("guide_vikram", "vikram.bisht@trekkings.com", "Vikram Bisht", "9876543213"),
+            ("guide_sneha", "sneha.thapa@trekkings.com", "Sneha Thapa", "9876543214"),
+            ("guide_rajesh", "rajesh.kumar@trekkings.com", "Rajesh Kumar", "9876543215"),
+            ("guide_anjali", "anjali.sharma@trekkings.com", "Anjali Sharma", "9876543216"),
+            ("guide_rohit", "rohit.singh@trekkings.com", "Rohit Singh", "9876543217"),
+            ("guide_kiran", "kiran.joshi@trekkings.com", "Kiran Joshi", "9876543218"),
+            ("guide_manish", "manish.yadav@trekkings.com", "Manish Yadav", "9876543219"),
+            ("guide_deepa", "deepa.shah@trekkings.com", "Deepa Shah", "9876543220")
         ]
         
         guides = []
@@ -45,7 +45,7 @@ def seed_database():
             g = User(
                 username=username,
                 email=email,
-                password=generate_password_hash("guide123"),
+                password=generate_password_hash("0000"),  # 🔒 Set to 0000
                 full_name=name,
                 phone=phone,
                 role="staff",
@@ -59,7 +59,7 @@ def seed_database():
         db.session.commit()
 
         print("Hydrating 10 Customer Trekker Records...")
-        # 🥾 10 REGISTERED TREKKERS
+        #10 REGISTERED TREKKERS (Password set to 0000)
         trekker_data = [
             ("trekker_rahul", "rahul@gmail.com", "Rahul Verma", "9811122233"),
             ("trekker_ria", "ria@gmail.com", "Ria Kapoor", "9811122234"),
@@ -78,7 +78,7 @@ def seed_database():
             t = User(
                 username=username,
                 email=email,
-                password=generate_password_hash("user123"),
+                password=generate_password_hash("0000"),  # 🔒 Set to 0000
                 full_name=name,
                 phone=phone,
                 role="trekker",
@@ -89,13 +89,13 @@ def seed_database():
             db.session.add(t)
 
         print("Hydrating 10 Real-World Trek Destinations...")
-        # 🗻 10 DETAILED TREK DESTINATIONS
+        # 10 DETAILED TREK DESTINATIONS
         trek_data = [
-            ("Kedarkantha Peak Expedition", "Uttarakhand", "Moderate", "5 Days / 4 Nights", 20, 8500.0, guides[0].id, 10,
+            ("Kedarkantha Peak Expedition", "Uttarakhand", "Moderate", "5 Days / 4 Nights", 20, 8500.0, guides[0].id, 15,
              "Famous for its winter snowscape slopes and spectacular 360-degree views from the summit range."),
-            ("Valley of Flowers Trail", "Uttarakhand", "Easy", "6 Days / 5 Nights", 15, 9200.0, None, 15,
+            ("Valley of Flowers Trail", "Uttarakhand", "Easy", "6 Days / 5 Nights", 15, 9200.0, None, 30,
              "A beautiful UNESCO World Heritage site carpeted with wild alpine meadow flowers."),
-            ("Hampta Pass Crossing", "Himachal Pradesh", "Hard", "5 Days / 4 Nights", 12, 11000.0, guides[1].id, 20,
+            ("Hampta Pass Crossing", "Himachal Pradesh", "Hard", "5 Days / 4 Nights", 12, 11000.0, guides[1].id, 45,
              "An incredible contrast transition route shifting from lush green valley slopes into cold high-altitude desert mountains."),
             ("Roopkund Lake Trek", "Uttarakhand", "Hard", "8 Days / 7 Nights", 10, 14500.0, guides[2].id, 25,
              "A thrilling high-altitude trek leading to the mysterious, glacial Skeleton Lake surrounded by alpine meadows."),
@@ -109,7 +109,7 @@ def seed_database():
              "Known as the trek of the Titans, offering spectacular views of four of the world's highest peaks, including Mt. Everest."),
             ("Brahmatal Winter Trek", "Uttarakhand", "Moderate", "6 Days / 5 Nights", 18, 9000.0, guides[6].id, 22,
              "A rare, spectacular winter trail offering majestic frozen high-altitude lake vistas and sprawling snowfields."),
-            ("Goechala Pass Expedition", "Sikkim", "Hard", "10 Days / 9 Nights", 8, 18500.0, guides[7].id, 30,
+            ("Goechala Pass Expedition", "Sikkim", "Hard", "10 Days / 9 Nights", 8, 18500.0, guides[7].id, 35,
              "A demanding mountain path offering views of the massive southeast face of Mt. Kanchenjunga.")
         ]
         
@@ -121,7 +121,7 @@ def seed_database():
                 difficulty=diff,
                 duration=dur,
                 total_slots=slots,
-                available_slots=slots - 2, # Save some empty spacing fields
+                available_slots=slots - 2,
                 assigned_staff_id=staff_id,
                 start_date=datetime.now().date() + timedelta(days=days_out),
                 end_date=datetime.now().date() + timedelta(days=days_out + 5),
@@ -134,7 +134,7 @@ def seed_database():
         db.session.commit()
 
         print("Hydrating Initial Booking History...")
-        # 📅 INITIAL MATCHED BOOKINGS FOR METRICS
+        # INITIAL MATCHED BOOKINGS FOR METRICS
         for i in range(5):
             b = Booking(
                 user_id=trekkers[i].id,
@@ -144,7 +144,7 @@ def seed_database():
             db.session.add(b)
             
         db.session.commit()
-        print("🎉 Database successfully hydrated with 10 Users, 10 Staff Profiles, and 10 Treks!")
+        print(" Database successfully re-seeded! All staff and trekkers have password '0000'. Admin password remains 'admin123'.")
 
 if __name__ == "__main__":
     seed_database()

@@ -33,6 +33,7 @@ class Trek(db.Model):
     end_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='Upcoming')
 
     bookings = db.relationship('Booking', backref='trek_details', lazy=True)
 
