@@ -327,7 +327,7 @@
                                     <thead class="table-light text-muted">
                                         <tr>
                                             <th>Booking ID</th>
-                                            <th>Destination Route</th>
+                                            <th>Destination</th>
                                             <th>Date Registered</th>
                                             <th>Status</th>
                                         </tr>
@@ -336,8 +336,7 @@
                                         {% for booking in bookings %}
                                         <tr>
                                             <td class="text-muted fw-mono">#BKG-00{{ booking.id }}</td>
-                                            <td class="fw-bold text-dark">{{ booking.trek.name if booking.trek else
-                                                'Unknown Expedition' }}</td>
+                                            <td class="fw-bold text-dark">{{ booking.trek.name}}</td>
                                             <td class="text-secondary">{{ booking.created_at.strftime('%d-%b-%Y') if
                                                 booking.created_at else 'Recent' }}</td>
                                             <td><span

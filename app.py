@@ -33,6 +33,11 @@ with app.app_context():
 
 # --- ROUTES ---
 
+# ROOT PATH REDIRECT
+@app.route('/')
+def home():
+    return redirect(url_for('register'))
+
 # LOGIN ROUTE
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -51,10 +56,6 @@ def logout():
 def register():
     return registraiton_route_handler()
 
-# ROOT PATH REDIRECT
-@app.route('/')
-def home():
-    return redirect(url_for('register'))
 
 # --- ADMIN PANEL & MANAGEMENT ROUTES ---
 
@@ -77,6 +78,30 @@ def admin_approve_staff(user_id):
 @app.route('/admin/trek/add',methods=['POST'])
 def admin_add_trek():
     return add_trek_handler()
+
+# DELETE TREK
+@app.route('/admin/trek/delete/<int:trek_id>', methods=['POST'])
+@login_required
+def delete_trek(trek_id):
+    # Security check: Ensure only admins can do this
+    if current_user.role != 'admin':
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('home'))
+
+    # Find the trek in the database
+    trek = Trek.query.get_or_404(trek_id)
+    
+    try:
+        db.session.delete(trek)
+        db.session.commit()
+        flash(f'Trek "{trek.title}" was successfully deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        # If the trek is tied to existing bookings, the database might block deletion
+        flash('Cannot delete this trek. It may have existing bookings tied to it.', 'danger')
+
+    # Redirect back to the admin dashboard, specifically on the 'treks' tab
+    return redirect(url_for('admin_dashboard', tab='treks'))
 
 
 # --- GENERAL USER & STAFF PORTALS (PLACEHOLDERS) ---

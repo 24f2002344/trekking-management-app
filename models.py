@@ -35,7 +35,7 @@ class Trek(db.Model):
     price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Upcoming')
 
-    bookings = db.relationship('Booking', backref='trek_details', lazy=True)
+    bookings = db.relationship('Booking', backref='trek', lazy=True)
 
 class Booking(db.Model):
     __tablename__ = 'bookings'
@@ -46,3 +46,4 @@ class Booking(db.Model):
     
     booking_date = db.Column(db.DateTime, default=datetime.now)
     status = db.Column(db.String(20), nullable=False, default='pending')
+    
